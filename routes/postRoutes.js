@@ -1,5 +1,5 @@
-const Post = require('../models/Post');
 const express = require('express');
+const Post = require('../models/Post');
 
 const router = express.Router();
 
@@ -22,4 +22,21 @@ router.get('/get/:postId', async (req, res) => {
     res.json(err);
   }
 });
+
+// ADD
+router.post('/addPost', async (req, res) => {
+  try {
+    const post = await new Post({
+      title: req.body.title,
+      content: req.body.content,
+      category: req.body.category,
+      author: req.body.author,
+    });
+    const savedPost = await post.save();
+    res.json(savedPost);
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 module.exports = router;

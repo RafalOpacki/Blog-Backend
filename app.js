@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const postRoutes = require('./routes/postRoutes');
 
 require('dotenv').config();
 
@@ -15,3 +16,9 @@ mongoose.connect(
     console.log('connected to DB');
   },
 );
+
+// MIDDLEWARE
+
+// POSTS
+
+app.use('/posts', postRoutes);

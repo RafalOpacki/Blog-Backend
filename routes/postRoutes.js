@@ -1,5 +1,5 @@
 const express = require('express');
-const Post = require('../models/Post');
+const Post = require('../models/Post').postModel;
 const postValidation = require('../validation/postValidation');
 
 const router = express.Router();
@@ -27,8 +27,12 @@ router.get('/get/:postId', async (req, res) => {
 // ADD
 router.post('/addPost', async (req, res) => {
   const validation = await postValidation.validate(req.body);
+  const isTitleAlreadyTaken = await Post.find({ title: req.body.title });
+  if (isTitleAlreadyTaken) {
+    return res.json({ message: 'Title already taken' });
+  }
   if (validation.error) {
-    res.json({ message: validation.error.details[0].message });
+    return res.json({ message: validation.error.details[0].message });
   }
   try {
     const post = await new Post({
@@ -36,6 +40,7 @@ router.post('/addPost', async (req, res) => {
       content: req.body.content,
       category: req.body.category,
       author: req.body.author,
+      tags: req.body.tags,
     });
     const savedPost = await post.save();
     res.json(savedPost);
@@ -54,6 +59,29 @@ router.delete('/delete/:postId', async (req, res) => {
     } else {
       res.json({ message: 'Post does not exist' });
     }
+  } catch (err) {
+    res.json(err);
+  }
+});
+
+// EDIT
+router.patch('/edit/:postId', async (req, res) => {
+  const validation = await postValidation.validate(req.body);
+  if (validation.error) {
+    return res.json({ message: validation.error.details[0].message });
+  }
+  try {
+    await Post.updateOne(
+      { _id: req.params.postId },
+      {
+        title: req.body.title,
+        content: req.body.content,
+        category: req.body.category,
+        author: req.body.author,
+        tags: req.body.tags,
+      },
+    );
+    res.json({ message: 'updated' });
   } catch (err) {
     res.json(err);
   }

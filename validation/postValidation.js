@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 
-const postSchema = Joi.object({
+const postSchemaValidation = Joi.object({
   title: Joi.string()
     .required()
     .min(6),
@@ -13,6 +13,7 @@ const postSchema = Joi.object({
   author: Joi.string()
     .required()
     .min(6),
+  tags: Joi.array().items(Joi.string()),
 });
 
-module.exports = postSchema;
+module.exports = postSchemaValidation;

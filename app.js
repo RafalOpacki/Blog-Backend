@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 
 // ROUTES
 const postRoutes = require('./routes/postRoutes');
+const userRoutes = require('./routes/userRoutes');
 //
 
 require('dotenv').config();
@@ -23,9 +24,8 @@ mongoose.connect(
 );
 
 // MIDDLEWARES
-
 app.use(bodyParser.json());
-
 // POSTS
-
 app.use('/posts', postRoutes);
+// USER
+app.use('/user', userRoutes);

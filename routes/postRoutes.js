@@ -1,5 +1,6 @@
 const express = require('express');
 const Post = require('../models/Post');
+const postValidation = require('../validation/postValidation');
 
 const router = express.Router();
 
@@ -25,6 +26,10 @@ router.get('/get/:postId', async (req, res) => {
 
 // ADD
 router.post('/addPost', async (req, res) => {
+  const validation = await postValidation.validate(req.body);
+  if (validation.error) {
+    res.json({ message: validation.error.details[0].message });
+  }
   try {
     const post = await new Post({
       title: req.body.title,

@@ -39,4 +39,19 @@ router.post('/addPost', async (req, res) => {
   }
 });
 
+// DELETE BY ID
+router.delete('/delete/:postId', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (post) {
+      await post.remove();
+      res.json({ message: 'Post deleted' });
+    } else {
+      res.json({ message: 'Post does not exist' });
+    }
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 module.exports = router;

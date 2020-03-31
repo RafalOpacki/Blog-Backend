@@ -10,7 +10,7 @@ router.get('/getAll', async (req, res) => {
     const posts = await Post.find();
     res.json(posts);
   } catch (err) {
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -18,6 +18,9 @@ router.get('/getAll', async (req, res) => {
 router.get('/get/:postId', async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Not found' });
+    }
     res.json(post);
   } catch (err) {
     res.json(err);
@@ -27,25 +30,23 @@ router.get('/get/:postId', async (req, res) => {
 // ADD
 router.post('/addPost', async (req, res) => {
   const validation = await postValidation.validate(req.body);
-  const isTitleAlreadyTaken = await Post.find({ title: req.body.title });
-  if (isTitleAlreadyTaken) {
-    return res.json({ message: 'Title already taken' });
-  }
   if (validation.error) {
-    return res.json({ message: validation.error.details[0].message });
+    return res
+      .status(409)
+      .json({ message: validation.error.details[0].message });
   }
+  const post = await new Post({
+    title: req.body.title,
+    content: req.body.content,
+    category: req.body.category,
+    author: req.body.author,
+    tags: req.body.tags,
+  });
   try {
-    const post = await new Post({
-      title: req.body.title,
-      content: req.body.content,
-      category: req.body.category,
-      author: req.body.author,
-      tags: req.body.tags,
-    });
     const savedPost = await post.save();
-    res.json(savedPost);
+    res.status(201).json(savedPost);
   } catch (err) {
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -55,22 +56,24 @@ router.delete('/delete/:postId', async (req, res) => {
     const post = await Post.findById(req.params.postId);
     if (post) {
       await post.remove();
-      res.json({ message: 'Post deleted' });
+      return res.json({ message: 'Post deleted' });
     } else {
-      res.json({ message: 'Post does not exist' });
+      return res.status(404).json({ message: 'Post does not exist' });
     }
   } catch (err) {
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
 // EDIT
 router.patch('/edit/:postId', async (req, res) => {
-  const validation = await postValidation.validate(req.body);
-  if (validation.error) {
-    return res.json({ message: validation.error.details[0].message });
-  }
   try {
+    const validation = await postValidation.validate(req.body);
+    if (validation.error) {
+      return res
+        .status(409)
+        .json({ message: validation.error.details[0].message });
+    }
     await Post.updateOne(
       { _id: req.params.postId },
       {
@@ -83,7 +86,7 @@ router.patch('/edit/:postId', async (req, res) => {
     );
     res.json({ message: 'updated' });
   } catch (err) {
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 

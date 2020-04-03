@@ -5,6 +5,7 @@ const postValidation = require('../validation/postValidation');
 const router = express.Router();
 
 // GET ALL / GET BY QUERY PARAMS
+// posts/getAll?limit=10&page=1 // 1 = first page
 router.get('/getAll', async (req, res) => {
   try {
     const limit = await parseInt(req.query.limit);
@@ -12,9 +13,14 @@ router.get('/getAll', async (req, res) => {
 
     const posts = await Post.find()
       .limit(limit)
-      .skip(limit * page)
-      .sort({ title: -1 });
-    res.json(posts);
+      .skip(limit * (page - 1));
+    const postsCount = await Post.count();
+    const pagesCount = await Math.round(postsCount / limit + 0.5);
+
+    res.json({
+      posts,
+      pageable: { pagesCount, limit, currentPage: page, postsCount },
+    });
   } catch (err) {
     res.status(500).json(err);
   }

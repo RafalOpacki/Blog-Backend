@@ -4,10 +4,16 @@ const postValidation = require('../validation/postValidation');
 
 const router = express.Router();
 
-// GET ALL
+// GET ALL / GET BY QUERY PARAMS
 router.get('/getAll', async (req, res) => {
   try {
-    const posts = await Post.find();
+    const limit = await parseInt(req.query.limit);
+    const page = await parseInt(req.query.page);
+
+    const posts = await Post.find()
+      .limit(limit)
+      .skip(limit * page)
+      .sort({ title: -1 });
     res.json(posts);
   } catch (err) {
     res.status(500).json(err);

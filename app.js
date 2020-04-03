@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-
+const bodyParser = require('body-parser');
+const cors = require('cors');
 // ROUTES
 const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -25,6 +25,7 @@ mongoose.connect(
 
 // MIDDLEWARES
 app.use(bodyParser.json());
+app.use(cors());
 // POSTS
 app.use('/posts', postRoutes);
 // USER

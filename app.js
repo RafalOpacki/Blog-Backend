@@ -10,11 +10,9 @@ const userRoutes = require('./routes/userRoutes');
 require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-app.listen(process.env.PORT || port, () =>
-  console.log(`Server is live on port ${process.env.PORT || port}`),
-);
+app.listen(port, () => console.log(`Server is live on port ${port}`));
 
 mongoose.connect(
   process.env.DB_CONNECTION_STRING,

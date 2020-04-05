@@ -23,6 +23,10 @@ mongoose.connect(
   },
 );
 
+app.get('/', (req, res) => {
+  res.send('App is on');
+});
+
 // MIDDLEWARES
 app.use(bodyParser.json());
 app.use(cors());

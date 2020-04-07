@@ -17,6 +17,6 @@ router.post('/addPost', postController.addPost);
 router.delete('/delete/:postId', postController.deletePost);
 
 // EDIT
-router.patch('/edit/:postId', postController.addPost);
+router.patch('/edit/:postId', postController.editPost);
 
 module.exports = router;

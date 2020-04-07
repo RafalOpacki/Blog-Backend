@@ -13,7 +13,8 @@ router.get('/getAll', async (req, res) => {
 
     const posts = await Post.find()
       .limit(limit)
-      .skip(limit * (page - 1));
+      .skip(limit * (page - 1))
+      .sort({ creationDate: 'desc' });
     const postsCount = await Post.count();
     const pagesCount = await Math.round(postsCount / limit + 0.5);
 

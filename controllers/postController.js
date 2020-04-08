@@ -7,7 +7,11 @@ const getAllPosts = async (req, res) => {
   try {
     const limit = await parseInt(req.query.limit);
     const page = await parseInt(req.query.page);
-    const posts = await Post.find()
+    const searchQuery = await req.query.search;
+
+    const posts = await Post.find({
+      title: { $regex: searchQuery, $options: 'i' },
+    })
       .limit(limit)
       .skip(limit * (page - 1))
       .sort({ creationDate: 'desc' });

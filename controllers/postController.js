@@ -96,7 +96,11 @@ const editPost = async (req, res) => {
         tags: req.body.tags,
       },
     );
-    res.json({ message: 'updated' });
+    const modifiedPost = await Post.findById(req.params.postId);
+    res.json({
+      post: modifiedPost,
+      message: 'updated',
+    });
   } catch (err) {
     res.status(500).json(err);
   }

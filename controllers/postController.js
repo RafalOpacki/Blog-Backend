@@ -10,7 +10,7 @@ const getAllPosts = async (req, res) => {
     const searchQuery = await req.query.search;
 
     const posts = await Post.find({
-      title: { $regex: searchQuery, $options: 'i' },
+      title: { $regex: searchQuery || '', $options: 'i' },
     })
       .limit(limit)
       .skip(limit * (page - 1))

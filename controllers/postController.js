@@ -18,6 +18,7 @@ const getAllPosts = async (req, res) => {
     const searchPostsCount = await posts.length;
     const postsCount = await Post.countDocuments();
     const pagesCount = await Math.round(postsCount / limit + 0.49);
+    const searchPagesCount = await Math.round(searchPostsCount / limit + 0.49);
     res.json({
       posts,
       pageable: {
@@ -25,7 +26,8 @@ const getAllPosts = async (req, res) => {
         limit,
         currentPage: page,
         postsCount,
-        searchPostsCount,
+        searchPostsCount: searchQuery === '' ? postsCount : searchPostsCount,
+        searchPagesCount: searchQuery === '' ? pagesCount : searchPagesCount,
       },
     });
   } catch (err) {

@@ -15,11 +15,18 @@ const getAllPosts = async (req, res) => {
       .limit(limit)
       .skip(limit * (page - 1))
       .sort({ creationDate: 'desc' });
-    const postsCount = await Post.count();
-    const pagesCount = await Math.round(postsCount / limit + 0.5);
+    const searchPostsCount = await posts.length;
+    const postsCount = await Post.countDocuments();
+    const pagesCount = await Math.round(postsCount / limit + 0.49);
     res.json({
       posts,
-      pageable: { pagesCount, limit, currentPage: page, postsCount },
+      pageable: {
+        pagesCount,
+        limit,
+        currentPage: page,
+        postsCount,
+        searchPostsCount,
+      },
     });
   } catch (err) {
     res.status(500).json(err);

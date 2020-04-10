@@ -16,9 +16,14 @@ const userSchema = mongoose.Schema({
   },
   posts: {
     type: [postSchema],
+    default: [],
+  },
+  authenticated: {
+    type: Boolean,
+    default: false,
   },
 });
 
 const userModel = mongoose.model('users', userSchema);
 
-module.exports = userModel;
+module.exports = { userModel, userSchema };

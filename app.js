@@ -2,10 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-// ROUTES
+// <-- ROUTES
 const postRoutes = require('./routes/postRoutes');
 const userRoutes = require('./routes/userRoutes');
-//
+// --> ROUTES
 
 require('dotenv').config();
 
@@ -16,7 +16,7 @@ app.listen(port, () => console.log(`Server is live on port ${port}`));
 
 mongoose.connect(
   process.env.DB_CONNECTION_STRING,
-  //add .env file with DB_CONNECTION_STRING
+  // add .env file with DB_CONNECTION_STRING
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => {
     console.log('connected to DB');
@@ -32,5 +32,5 @@ app.use(bodyParser.json());
 app.use(cors());
 // POSTS
 app.use('/posts', postRoutes);
-// USER
-app.use('/user', userRoutes);
+// USERS
+app.use('/users', userRoutes);
